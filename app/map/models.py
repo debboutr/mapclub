@@ -20,11 +20,11 @@ creator = deepzoom.ImageCreator(
 
 
 def get_upload_path(instance, filename):
-    return f"usr_{instance.maker.id}/uploads/{filename}"
+    return f"usr_{instance.maker.id}/uploads/images/{filename}"
 
 
 def get_thumbnail_path(instance, filename):
-    return f"{instance.id}/thumbnails/{filename}"
+    return f"usr_{instance.maker.id}/uploads/thumbnails/{filename}"
 
 
 class Category(models.Model):
@@ -47,9 +47,9 @@ class Map(models.Model):
     )
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
-    image = models.ImageField(upload_to=get_upload_path, blank=True, null=True)
+    image = models.ImageField(upload_to=get_upload_path)
     slug = models.SlugField()
-    thumbnail = models.ImageField(upload_to="", blank=True, null=True)
+    thumbnail = models.ImageField(upload_to=get_thumbnail_path, blank=True, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
     pub_date = models.DateField(default=datetime.datetime.today)
     maker = models.ForeignKey(
@@ -79,11 +79,8 @@ class Map(models.Model):
     def get_thumbnail(self):
         if self.thumbnail:
             return "http://127.0.0.1:8000" + self.thumbnail.url
-        else:
+        else: # thi makes no sense if we are creating on save
             if self.image:
-                self.thumbnail = self.make_thumbnail(self.image)
-                self.save()
-
                 return "http://127.0.0.1:8000" + self.thumbnail.url
             else:
                 return ""
@@ -101,9 +98,13 @@ class Map(models.Model):
         return thumbnail
 
     def save(self, *args, **kwargs):
+        self.thumbnail = self.make_thumbnail(self.image)
         super(Map, self).save(*args, **kwargs)
         a = list(Path(self.image.url).parts)[2:]
+        print("hey!!!!!*****", a)
         img = str(settings.MEDIA_ROOT / Path(*a))
-        dzi, _ = a[-1].split(".")
-        out = str(settings.MEDIA_ROOT / Path(*a[:-1]) / dzi / f"{dzi}.dzi")
+        *dzi, _ = a[-1].split(".")
+        dzi = ".".join(dzi)
+        out = str(settings.MEDIA_ROOT / Path(*a[:-2]) / "dzis" / dzi / f"{dzi}.dzi")
+
         creator.create(img, out)
