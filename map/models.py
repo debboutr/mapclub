@@ -8,14 +8,7 @@ from django.core.files import File
 from django.db import models
 from PIL import Image
 
-import deepzoom
-
-# Create Deep Zoom Image creator with weird parameters
-creator = deepzoom.ImageCreator(
-    tile_format="png",
-    image_quality=1,
-    resize_filter="antialias",
-)
+from .tasks import test
 
 
 def get_upload_path(instance, filename):
@@ -105,5 +98,4 @@ class Map(models.Model):
         dzi = ".".join(dzi)
         out = str(settings.MEDIA_ROOT / Path(*a[:-2]) / "dzis" / dzi / f"{dzi}.dzi")
         print("hey!!!!!*****", out)
-
-        creator.create(img, out)
+        test.delay(img, out)

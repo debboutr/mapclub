@@ -4,3 +4,4 @@
 **/migrations/*
 *.gz
 
+celerybeat-schedule
