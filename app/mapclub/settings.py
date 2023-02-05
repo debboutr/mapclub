@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "djoser",
     "product",
     "order",
+    "map",
 ]
 
 CORS_ALLOWED_ORIGINS = ["http://localhost:5000", "http://localhost:8080"]
