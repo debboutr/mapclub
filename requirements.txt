@@ -33,3 +33,7 @@ sqlparse==0.4.3
 stripe==5.0.0
 uritemplate==4.1.1
 urllib3==1.26.14
+git+https://github.com/openzoom/deepzoom.py.git@master#egg=deepzoomtools
+celery==5.2.7
+redis==4.3.4
+flower==1.2.0

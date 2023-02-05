@@ -1,5 +1,4 @@
 from pathlib import Path
-import os
 from io import BytesIO
 import datetime
 
@@ -101,10 +100,10 @@ class Map(models.Model):
         self.thumbnail = self.make_thumbnail(self.image)
         super(Map, self).save(*args, **kwargs)
         a = list(Path(self.image.url).parts)[2:]
-        print("hey!!!!!*****", a)
         img = str(settings.MEDIA_ROOT / Path(*a))
         *dzi, _ = a[-1].split(".")
         dzi = ".".join(dzi)
         out = str(settings.MEDIA_ROOT / Path(*a[:-2]) / "dzis" / dzi / f"{dzi}.dzi")
+        print("hey!!!!!*****", out)
 
         creator.create(img, out)

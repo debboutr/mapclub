@@ -25,7 +25,7 @@ RUN flake8 --ignore=E501,F401 .
 # install dependencies
 COPY ./requirements.txt .
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels https://github.com/openzoom/deepzoom.py/archive/refs/heads/master.zip
+# RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels https://github.com/openzoom/deepzoom.py/archive/refs/heads/master.zip
 
 
 #########
