@@ -26,7 +26,9 @@ class Migration(migrations.Migration):
                 ("name", models.CharField(max_length=255)),
                 ("slug", models.SlugField()),
             ],
-            options={"ordering": ("name",),},
+            options={
+                "ordering": ("name",),
+            },
         ),
         migrations.CreateModel(
             name="Product",
@@ -62,6 +64,8 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"ordering": ("-date_added",),},
+            options={
+                "ordering": ("-date_added",),
+            },
         ),
     ]

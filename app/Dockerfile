@@ -17,6 +17,11 @@ RUN pip install --upgrade pip
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 
+# install deepzoom.py
+RUN wget https://github.com/openzoom/deepzoom.py/archive/refs/heads/master.zip
+RUN unzip master.zip && mv deepzoom.py-master/ deepzoom/
+RUN pip install deepzoom/
+
 # copy entrypoint.sh
 COPY ./entrypoint.sh .
 RUN sed -i 's/\r$//g' /usr/src/app/entrypoint.sh

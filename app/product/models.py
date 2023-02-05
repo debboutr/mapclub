@@ -1,8 +1,29 @@
+from pathlib import Path
+import os
 from io import BytesIO
 
+from django.conf import settings
+from django.contrib.auth.models import User
 from django.core.files import File
 from django.db import models
 from PIL import Image
+
+import deepzoom
+
+# Create Deep Zoom Image creator with weird parameters
+creator = deepzoom.ImageCreator(
+    tile_format="png",
+    image_quality=1,
+    resize_filter="antialias",
+)
+
+
+def get_upload_path(instance, filename):
+    return f"usr_{instance.author.id}/uploads/{filename}"
+
+
+def get_thumbnail_path(instance, filename):
+    return f"{instance.id}/thumbnails/{filename}"
 
 
 class Category(models.Model):
@@ -23,12 +44,14 @@ class Product(models.Model):
     category = models.ForeignKey(
         Category, related_name="products", on_delete=models.CASCADE
     )
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     slug = models.SlugField()
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=6, decimal_places=2)
-    image = models.ImageField(upload_to="uploads/", blank=True, null=True)
-    thumbnail = models.ImageField(upload_to="thumbnails/", blank=True, null=True)
+    image = models.ImageField(upload_to=get_upload_path, blank=True, null=True)
+    # dzi = models.ImageField(upload_to="dzis/", blank=True, null=True)
+    thumbnail = models.ImageField(upload_to="", blank=True, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -65,6 +88,19 @@ class Product(models.Model):
         thumb_io = BytesIO()
         img.save(thumb_io, "JPEG", quality=85)
 
-        thumbnail = File(thumb_io, name=image.name.replace("uploads/", ""))
+        thumbnail = File(thumb_io, name=image.name.replace("uploads/", "thumbnails/"))
 
         return thumbnail
+
+    def save(self, *args, **kwargs):
+        super(Product, self).save(*args, **kwargs)
+        # base, fn = os.path.split(self.image.url)
+        a = list(Path(self.image.url).parts)[2:]
+        img = str(settings.MEDIA_ROOT / Path(*a))
+        dzi, _ = a[-1].split(".")
+        out = str(settings.MEDIA_ROOT / Path(*a[:-1]) / dzi / f"{dzi}.dzi")
+        # loc = f"{settings.MEDIA_ROOT}{base[6:]}"
+        # dd = fn.split(".")[0]
+        # img = os.path.join(settings.MEDIA_ROOT, self.image.url)
+        # gg = f"{settings.MEDIA_ROOT}{self.image.url[6:]}"
+        creator.create(img, out)
