@@ -1,8 +1,10 @@
-from django.shortcuts import render
 from django.core.files.storage import FileSystemStorage
+from django.shortcuts import render
 
 
 def image_upload(request):
+    asdf = 77 / 0
+    print(asdf)
     if request.method == "POST" and request.FILES["image_file"]:
         image_file = request.FILES["image_file"]
         fs = FileSystemStorage()

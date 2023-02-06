@@ -4,11 +4,8 @@ from django.contrib.auth.models import User
 from django.http import Http404
 from django.shortcuts import render
 from rest_framework import authentication, permissions, status
-from rest_framework.decorators import (
-    api_view,
-    authentication_classes,
-    permission_classes,
-)
+from rest_framework.decorators import (api_view, authentication_classes,
+                                       permission_classes)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -30,12 +27,12 @@ def checkout(request):
         )
 
         try:
-            charge = stripe.Charge.create(
-                amount=int(paid_amount * 100),
-                currency="USD",
-                description="Charge from Djackets",
-                source=serializer.validated_data["stripe_token"],
-            )
+            # charge = stripe.Charge.create(
+            #     amount=int(paid_amount * 100),
+            #     currency="USD",
+            #     description="Charge from Djackets",
+            #     source=serializer.validated_data["stripe_token"],
+            # )
 
             serializer.save(user=request.user, paid_amount=paid_amount)
 

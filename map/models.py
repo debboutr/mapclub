@@ -1,6 +1,6 @@
-from pathlib import Path
-from io import BytesIO
 import datetime
+from io import BytesIO
+from pathlib import Path
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -45,14 +45,12 @@ class Map(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     pub_date = models.DateField(default=datetime.datetime.today)
     maker = models.ForeignKey(
-        User,
-        related_name='entries',
-        blank=True, on_delete=models.PROTECT)
+        User, related_name="entries", blank=True, on_delete=models.PROTECT
+    )
     last_modified = models.DateTimeField(auto_now=True)
     last_modified_by = models.ForeignKey(
-        User,
-        related_name='entry_modifiers',
-        blank=True, on_delete=models.PROTECT)
+        User, related_name="entry_modifiers", blank=True, on_delete=models.PROTECT
+    )
 
     class Meta:
         ordering = ("-date_added",)
@@ -71,7 +69,7 @@ class Map(models.Model):
     def get_thumbnail(self):
         if self.thumbnail:
             return "http://127.0.0.1:8000" + self.thumbnail.url
-        else: # thi makes no sense if we are creating on save
+        else:  # thi makes no sense if we are creating on save
             if self.image:
                 return "http://127.0.0.1:8000" + self.thumbnail.url
             else:
