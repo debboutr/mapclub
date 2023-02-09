@@ -19,12 +19,13 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic.base import TemplateView
 
-from map.views import home
+from map.views import home, map_detail
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
     path("", home, name="home"),
+    path("map/<int:detail_id>/", map_detail, name="map_detail"),
     path("api/v1/", include("djoser.urls")),
     path("api/v1/", include("djoser.urls.authtoken")),
     path("api/v1/", include("product.urls")),

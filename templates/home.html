@@ -5,11 +5,11 @@
   <div class="row row-cols-1 row-cols-md-3">
     {% for map in maps %}
       <div class="col mb-4">
-        <div class="card h-100" style="width: 18rem;">
-          <img class="card-img-top" src="{{map.thumbnail.url}}" alt="Card image cap">
+        <div class="card text-white bg-dark h-100" style="width: 18rem;">
+          <img class="card-img-top" src="{{ map.thumbnail.url }}" alt="Card image cap">
           <div class="card-body">
             <p class="card-text">{{ map.name }}</p>
-            <a href="#" class="btn btn-primary stretched-link">Go somewhere</a>
+            <a href="{% url 'map_detail' map.id %}" class="btn btn-primary stretched-link">Go to map</a>
           </div>
         </div>
       </div>

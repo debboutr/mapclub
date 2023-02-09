@@ -7,6 +7,6 @@ def home(request):
     return render(request, "home.html", {"maps": objects})
 
 
-def detail(request, detail_id):
+def map_detail(request, detail_id):
     object = get_object_or_404(Map, pk=detail_id)
     return render(request, "map_detail.html", {"map": object})
