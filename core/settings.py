@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "product",
     "order",
     "map",
+    "django_bootstrap5",
 ]
 
 CORS_ALLOWED_ORIGINS = ["http://localhost:5000", "http://localhost:8080"]
@@ -67,7 +68,7 @@ ROOT_URLCONF = "core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

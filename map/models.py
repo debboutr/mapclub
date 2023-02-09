@@ -81,7 +81,7 @@ class Map(models.Model):
         img.thumbnail(size)
 
         thumb_io = BytesIO()
-        img.save(thumb_io, "JPEG", quality=85)
+        img.save(thumb_io, "JPEG", quality=100)
 
         thumbnail = File(thumb_io, name=image.name.replace("uploads/", "thumbnails/"))
 
@@ -95,5 +95,4 @@ class Map(models.Model):
         *dzi, _ = a[-1].split(".")
         dzi = ".".join(dzi)
         out = str(settings.MEDIA_ROOT / Path(*a[:-2]) / "dzis" / dzi / f"{dzi}.dzi")
-        print("hey!!!!!*****", out)
         test.delay(img, out)
