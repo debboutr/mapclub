@@ -19,6 +19,11 @@ def get_thumbnail_path(instance, filename):
     return f"usr_{instance.maker.id}/uploads/thumbnails/{filename}"
 
 
+def get_deepzoom_path(instance, filename):
+    directory = str(filename).replace(".dzi", "")
+    return f"usr_{instance.maker.id}/uploads/dzis/{directory}/{filename}"
+
+
 class Category(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField()
@@ -42,6 +47,7 @@ class Map(models.Model):
     image = models.ImageField(upload_to=get_upload_path)
     slug = models.SlugField()
     thumbnail = models.ImageField(upload_to=get_thumbnail_path, blank=True, null=True)
+    deepzoom = models.FileField(upload_to=get_deepzoom_path, blank=True, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
     pub_date = models.DateField(default=datetime.datetime.today)
     maker = models.ForeignKey(
@@ -66,11 +72,27 @@ class Map(models.Model):
             return "http://127.0.0.1:8000" + self.image.url
         return ""
 
+    def get_dzi_path(self):
+        a = list(Path(self.image.url).parts)[2:]
+        *dzi, _ = a[-1].split(".")
+        dzi = ".".join(dzi)
+        return str(Path(*a[:-2]) / "dzis" / dzi / f"{dzi}.dzi")
+
+    def get_deepzoom(self):
+        dzi_path = self.get_dzi_path()
+        if not self.deepzoom:
+            self.deepzoom.name = dzi_path
+            self.save()
+        return self.deepzoom.url
+
     def get_thumbnail(self):
         if self.thumbnail:
             return "http://127.0.0.1:8000" + self.thumbnail.url
         else:  # thi makes no sense if we are creating on save
             if self.image:
+                self.thumbnail = self.make_thumbnail(self.image)
+                self.save()
+
                 return "http://127.0.0.1:8000" + self.thumbnail.url
             else:
                 return ""
@@ -83,16 +105,14 @@ class Map(models.Model):
         thumb_io = BytesIO()
         img.save(thumb_io, "JPEG", quality=100)
 
+        print("qwer", image.name)
         thumbnail = File(thumb_io, name=image.name.replace("uploads/", "thumbnails/"))
 
         return thumbnail
 
     def save(self, *args, **kwargs):
-        self.thumbnail = self.make_thumbnail(self.image)
+        print("HERE I AM!", self.image.name)
         super(Map, self).save(*args, **kwargs)
-        a = list(Path(self.image.url).parts)[2:]
-        img = str(settings.MEDIA_ROOT / Path(*a))
-        *dzi, _ = a[-1].split(".")
-        dzi = ".".join(dzi)
-        out = str(settings.MEDIA_ROOT / Path(*a[:-2]) / "dzis" / dzi / f"{dzi}.dzi")
-        test.delay(img, out)
+        if not self.deepzoom:
+            dzi_path = self.get_dzi_path()
+            test.delay(str(self.image.file), str(settings.MEDIA_ROOT / dzi_path))

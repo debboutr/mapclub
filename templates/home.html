@@ -4,11 +4,12 @@
 <div class="container p-4">
   <div class="row row-cols-1 row-cols-md-3">
     {% for map in maps %}
-      <div class="col mb-4">
-        <div class="card text-white bg-dark h-100" style="width: 18rem;">
-          <img class="card-img-top" src="{{ map.thumbnail.url }}" alt="Card image cap">
+      <div class="col mb-4 w-25">
+        <div class="card text-white bg-dark">
+          <img class="card-img-top img-fluid" src="{{ map.get_thumbnail }}" alt="Card image cap">
           <div class="card-body">
             <p class="card-text">{{ map.name }}</p>
+            <p>{{ map.thumbnail.url }}</p>
             <a href="{% url 'map_detail' map.id %}" class="btn btn-primary stretched-link">Go to map</a>
           </div>
         </div>
