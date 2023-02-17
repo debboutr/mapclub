@@ -49,8 +49,13 @@ INSTALLED_APPS = [
     "django_bootstrap5",
 ]
 
-CORS_ALLOWED_ORIGINS = ["http://localhost:5000", "http://localhost:8080"]
-CSRF_TRUSTED_ORIGINS = ["http://localhost:1337"]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:1337",
+    "http://mapclub.info",
+    "http://localhost:5000",
+    "http://localhost:8080",
+]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:1337", "http://mapclub.info"]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

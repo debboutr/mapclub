@@ -87,13 +87,13 @@ class Map(models.Model):
 
     def get_thumbnail(self):
         if self.thumbnail:
-            return "http://127.0.0.1:8000" + self.thumbnail.url
+            return self.thumbnail.url
         else:  # thi makes no sense if we are creating on save
             if self.image:
                 self.thumbnail = self.make_thumbnail(self.image)
                 self.save()
 
-                return "http://127.0.0.1:8000" + self.thumbnail.url
+                return self.thumbnail.url
             else:
                 return ""
 
